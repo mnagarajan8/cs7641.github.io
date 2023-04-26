@@ -225,7 +225,7 @@
 			<h2>Dataset</h2>
 			<h3>About the Dataset</h3>
 			<p>The dataset we are using comes from the CDC and is a major part of the Behavioral Risk Factor Surveillance System (BRFSS), which conducts annual telephone surveys to gather data on the health status of U.S. residents. This dataset accounts for leading factors like BMI, smoking history, and sex which are currently identified as factors leading to heart disease.The following is a sample of raw data from the dataset:<\p>
-			<ADD IMAGE>
+			<img src="sample_data.png">
 			<p>Source of Data: <a href="https://www.cdc.gov/brfss/annual_data/annual_2020.html">click here</a></p>
 			<p>Dataset Link (Kaggle): <a href="https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease">click here</a></p>
 				
@@ -236,7 +236,7 @@
 					<li>As a result, 18078 rows were dropped</li>
 				</ul>
 			<p>For pre-processing, by looking at the data we can see there are a lot of categorical features. To solve this issue we created our own defined mappings along with sklearn’s LabelEncoder. The same snippet of raw data now looks like:</p>
-				<ADD IMAGE>
+				<img src="pre_processed.png">
 			
 			<h2>Post-processing Visualizations</h2>
 			<p>Following the cleaning techniques used, we made visuals to gain insight into the distribution of all the features.</p>
@@ -298,14 +298,14 @@
 			<p>Generally, we can say that the clusters had average to above-average separation. We then wanted to see how well these clusters mapped to the target feature which was whether the person had Heart Disease or not. We mapped the points in these clusters back to the target feature and found the following percentages of points correctly classified.</p>
 						<img src="per_km.png">
 			<p>We can see that the unbalanced dataset has a significant percentage of properly classified points. However, because we only have 2 clusters here, and there is class imbalance, it is potentially skewed so the statistic may not too helpful in making any conclusions. The other two datasets however are balanced and do not have the same issues. From the table these percentages indicate that it does a little better than a coin toss. This may indicate that the feature with high variance that get captured by PCA are not key features in determining the target feature. We then did more cluster analysis on the features that might have differentiated the two clusters. We did this by linking the clusters back to their original dataset and averaging the values per feature per cluster. We chose to focus on the Downsample Majority dataset alone as an example.</p>
-						<ADD TABLE>
+						<img src="downsampled.png">
 			<p>From this, the differences that pop out immediately are with the PhysicalHealth and MentalHealth features. They are the features that are most different per cluster. These features might vary the most but probably are not indicative of anything related to the target feature.</p>
 			<p>Next, we ran KMeans again but used the Elbow Method to find the optimal number of clusters. It seemed from the resulting graphs that 4 was generally a good number across datasets. This is the graph from using the Elbow Method on the Downsample Majority dataset:</p>
 						<img src="green_km.png">
 			<p>We decided to then run KMeans with 4 clusters on just the Downsample Majority dataset. The clustering result looked like:</p>
 						<img src="cluster_km.png">
 			<p>The Silhouette Coefficient for this clustering was .590 which was similar to the coefficient when there were 2 clustersWe again wanted to see what features were similar in each cluster. Repeating the previous clustering analysis, we got:</p>
-						<ADD TABLE IMAGE>
+						<img src="clustered.png">
 			<p>From the results we can see it was still a combination of the same features (PhysicalHealth and MentalHealth) that stood out the most as differentiators, while Stroke also seemed to vary but to a lesser extent. We can generally draw the same conclusions as before. It might be useful to remove these columns or decrease their range so that it is has less of an effect on clustering as a whole.</p>
 							
 			<li>GAUSSIAN MIXTURE MODEL (GMM) </li>
