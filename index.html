@@ -208,8 +208,99 @@
 		
 		</div>
 		<div class="tab-content" id="tab3">
-			<h2>Tab 3 Content</h2>
-			<p>This is the content for Tab 3.</p>
+			<h1>CS7641 Project Midterm Report (Indicators of Heart Disease)</h1>
+			
+			<h2>Introduction/Background</h2>
+			<p>Heart disease is currently the number 1 cause of death in the United States causing nearly 700,000 deaths per year. It is largely related to the person(s) current health conditions, as a result we will use machine learning models to identify leading factors resulting in positive diagnoses and also see if we can accurately predict subpopulations that either have or are privy to developing heart disease.</p>
+			<p>Much work has been done in this areas using various techniques on various datasets containing data on various potential heart disease factors. Rati Goel, for example, used 6 different algorithms on a dataset with data on things such as cholesterol and blood pressure[1].</p>
+			
+			<h2>Problem Definition</h2>
+			<p>Identifying the types of people that are likely to have heart disease and the primary factors can be valuable in developing treatments and in early detection so that we can better monitor the health of those at risk. We hope to add onto the body of work that already exists in this specific field of research.</p>
+		
+			<h2>Dataset</h2>
+			<h3>About the Dataset</h3>
+			<p>The dataset we are using comes from the CDC and is a major part of the Behavioral Risk Factor Surveillance System (BRFSS), which conducts annual telephone surveys to gather data on the health status of U.S. residents. This dataset accounts for leading factors like BMI, smoking history, and sex which are currently identified as factors leading to heart disease.The following is a sample of raw data from the dataset:<\p>
+			<ADD IMAGE>
+			<p>Source of Data: <a href="https://www.cdc.gov/brfss/annual_data/annual_2020.html">click here</a></p>
+			<p>Dataset Link (Kaggle): <a href="https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease">click here</a></p>
+				
+			<h3>Data Cleaning/Pre-processing</h3>
+			<p>Overall, this particular dataset had great usability, with no null entries/missing data. Therefore, we did not have to deal with this issue. We had to perform the following on the dataset for cleaning:</p>
+				<li>Remove Duplicate Columns</li>
+				<ul>
+					<li>As a result, 18078 rows were dropped</li>
+				</ul>
+			<p>For pre-processing, by looking at the data we can see there are a lot of categorical features. To solve this issue we created our own defined mappings along with sklearn’s LabelEncoder. The same snippet of raw data now looks like:</p>
+				<ADD IMAGE>
+			
+			<h2>Post-processing Visualizations</h2>
+			<p>Following the cleaning techniques used, we made visuals to gain insight into the distribution of all the features.</p>
+			<p>Catagorical features:</p> 
+					<ADD IMAGE>
+			<p>Continuous features:</p>
+					<ADD IMAGE>
+			<p>We also thought it was valuable to produce a correlation table between the features:</p>
+					<ADD IMAGE>
+			
+						
+			<h2>Data Imbalance</h2>
+			<p>For the class feature “HeartDisease”, previous visuals indicate that there is some amount of class imbalance. We used a couple of methods to solve this issue</p>
+			<li>Downsampling the Majority Class</li>
+			<li>SMOTE-NC</li>
+				<ul>
+					<li>SMOTE (Synthetic Minority Over-sampling Technique) creates synthetic samples by interpolating between existing minority samples in the feature space. It randomly selects a minority sample and creates new synthetic samples along the line segments connecting it to its k nearest neighbors. SMOTE-NC is a version of SMOTE that is able to deal with the combination of both categorical and numerical features</li>
+				</ul>
+			<p>Through the use of the above techniques, we evened out the target class equally 50-50. We will be comparing the differences in model accuracy that result from using an unbalanced dataset and the methods mentioned above.</p>
+			
+						
+			<h2>Feature Reduction</h2>
+						
+			<h3>PCA</h3>
+			<p>PCA (Principal Component Analysis) is a popular dimensionality reduction technique used to transform high-dimensional datasets into a lower-dimensional space. It does this by identifying the most important features that explain the majority of the variance in the data. The table below shows the percent variance captured by finding 2 and 3 principal components:</p>
+						<ADD TABLE IMAGE>
+			<p>It seems clear that we should be using minimally 3 principle components when training our unsupervised learning models. The following are what the PCAs for each dataset type when downsampling to 1000 points for the purpose of visuals:</p>
+							<ADD 3 IMAGES>
+			
+			<h2>Methods</h2>
+			<h3>Unsupervised</h3>
+			<li>KMEANS</li>
+			<p>We started working with KMeans because it is quite a simple algorithm that can potentially tell us a lot about the data that we have. We will be looking at our results through two lenses. First we will set the number of clusters to 2, as this is representative of our binary target feature. We will then see how the clustering of k=2 can match up with our classification feature. Though from looking at previous PCA visualizations, there is likely not going to be good accuracy. We will also use the Elbow Method to find the optimal number of clusters and run cluster analysis on it to see what kind of features result in certain clusters. Experimentally, we will run all of these with our 3 separate datasets (Unbalanced, Downsample Majority, SMOTE-NC).</p>
+			<li>GAUSSIAN MIXTURE MODEL</li>
+			<p>GMMs are a more advanced model in comparison to KMeans, utilizing Gaussian kernels to model each cluster. It is also a soft-clustering algorithm as opposed to KMeans which hard-clusters. We wanted apply our insight from KMeans and apply it to a type of model that may be able to better capture the characteristics of our data. Given the data itself is CDC survey data, we can analyze our KMeans model to make educated guesses on the features that may improve our clustering. We will use the approach as before, setting the number of clusters to 2, again matching it to our target feature. We hope that with this more nuanced model and with feature optimizations, our clusters will be closer to our target feature. We will focus solely on one of our datasets (Downsample Majority) and also do cluster analysis to see what features end up distinguishing clusters.</p>
+				
+			<h3>Unsupervised</h3>
+			<li>LOGISTIC REGRESSION</li>
+			<p>Logistic Regression was a prominent algorithm that we saw for general classification of Heart Disease. There are a couple of parameters that need to be defined to use sklearn’s Logistic Regression. We will be using l2 regularization for penalty, Stochastic Average Gradient Decent for the solver, and 1 for the inverse regularization strength. 20% of the dataset will be designated as the test set. We will again be evaluating the model’s performance using out 3 datasets (Unbalanced, Downsample Majority, SMOTE-NC) as we want to see whether handling this class imbalance is necessary or not and if any method is better than another. We then will see if any insight into features we gain from our unsupervised methods can improve model accuracy, specifically with the Unbalanced and Downsample Majority datasets.</p>
+			<li>XGBOOST CLASSIFIER</li>
+			<p>XGBoost is a classifier mentioned by Nagavelli et. al. as something they found to be accurate in their research[3]. It is generally described as a model that uses an ensemble of gradient-boosted decision trees that is great for classification. It is known for its ability to handle complex, high-dimensional data, and that may be more suited to this situation. We will define a few parameters that the classifier needs. We set the learning rate to 0.1, number of estimators to 100, and maximum depth to 4 to start with. 20% of the dataset will be designated as the test set. We will again be evaluating the model’s performance using our 3 datasets (Unbalanced, Downsample Majority, SMOTE-NC).</p>
+			<li>RANDOM FOREST CLASSIFIER</li>
+			<p>Random Forest Classifier is an ensemble method that combines multiple decision trees to create a model for classification tasks. The main draw of this algorithm for us is the fact that it allows for feature importance estimation which will tell us, in this context, what features may be important in determining heart disease. Setting the maximum depth of the decision trees to 8 and allocating 20% of the data to testing, we will again be evaluating the model’s performance using our 3 datasets (Unbalanced, Downsample Majority, SMOTE-NC) and discussing the important features that the model finds.</p>
+			<li>RANDOM FOREST CLASSIFIER WITH BAGGING</li>
+			<p>Bagging(Bootstrap Aggregation) is an ensemble algorithm that fits multiple models on different subsets of a training dataset, then combines the predictions from all models. Bagging allows many weak learners to combine efforts to outdo a single strong learner, so it prevents overfitting the model.</p>
+			<li>BAYE'S CLASSIFICATION</li>
+			<p>A Naive Bayes classifier is a probabilistic machine learning model that’s used for classification tasks. Based on the Bayes theorem, the Naive Bayes Classifier gives the conditional probability of an event A given event B. Since Bayes-based models are extremely popular in medical research, we used a Bayes Classification for Heart Disease prediction.</p>
+								
+								
+			<h2>Results/Discussion</h2>
+								
+								
+			
+								
+			<h2>Conclusion</h2>
+			<p>Overall, we introduced two unsupervised and three supervised for our heart disease data set. Given the class imbalance in the dataset, on top of the unbalanced dataset, we also did analysis on two more separate datasets that took this original heart disease dataset and solved the class imbalance by downsampling the majority class and by using SMOTE-NC to create synthetic data to upsample the minority class.</p>
+			<p>With our unsupervised methods, we wanted to see how these three datasets clustered after PCA. Specifically, we wanted to see if we could cluster accurately to the target feature. In KMeans we found that it was average but more importantly discovered how some less important features were being picked up by PCA due to their high variance. We corrected this in GMM by removing some of those problematic features and saw much better results, though we found later that there was a feature that probably should not have been removed. Regardless, the cluster accuracy of 73.05% was not bad.</p>
+			<p>With our supervised methods, we found that generally an accuracy of ~91% was the best that we could get coming mostly from models trained on our unbalanced dataset. However, we saw that the models trained on the unbalanced dataset had very poor recall rate, which in this medical context can be very bad and could be a reason for focusing on properly balanced datasets. Our seemingly best model came from the combination of the XGBoost Classifier trained on the SMOTE-NC dataset which topped out at 93% test accuracy. When verifying this by testing on the unbalanced dataset, we got an accuracy of 87%. The validity of this model hinges on if the synthetic samples that were created by SMOTE-NC would accurately model others that we do not have data on. If it accurately models the population, it could very well be the best model, especially since it does not run into recall issues. Lastly, we used Random Forest to see what features were the most important. It found AgeCategory, GenHealth (General Health rating), and Stroke to be the most important features. It would be interesting to see if these features align with what medical professionals have found to be the best indicators.</p>
+								
+				
+			<h2>Contribution Table</h2>
+			<ADD IMAGE>
+				
+			<h2>References</h2>
+			<li>Goel, R. (2021). Heart disease prediction using various algorithms of machine learning. SSRN Electronic Journal. https://doi.org/10.2139/ssrn.3884968</li>
+			<li>Jindal, H., Agrawal, S., Khera, R., Jain, R., & Nagrath, P. (2021). Heart disease prediction using machine learning algorithms. IOP Conference Series: Materials Science and Engineering, 1022(1), 012072. https://doi.org/10.1088/1757-899x/1022/1/012072</li>
+			<li>Nagavelli, U., Samanta, D., & Chakraborty, P. (2022). Machine learning technology-based heart disease detection models. Journal of Healthcare Engineering, 2022, 1–9. https://doi.org/10.1155/2022/7351061</li>
+					
+				
 		</div>
 	</div>
 </body>
