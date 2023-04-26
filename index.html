@@ -215,13 +215,7 @@
 		
 		
 		
-		
-		</div>
-		<div id="tab3" class="tabcontent">
-
-			<h1>CS7641 Project Midterm Report (Indicators of Heart Disease)</h1>
-			
-			<h2>Introduction/Background</h2>
+		<h2>Introduction/Background</h2>
 			<p>Heart disease is currently the number 1 cause of death in the United States causing nearly 700,000 deaths per year. It is largely related to the person(s) current health conditions, as a result we will use machine learning models to identify leading factors resulting in positive diagnoses and also see if we can accurately predict subpopulations that either have or are privy to developing heart disease.</p>
 			<p>Much work has been done in this areas using various techniques on various datasets containing data on various potential heart disease factors. Rati Goel, for example, used 6 different algorithms on a dataset with data on things such as cholesterol and blood pressure[1].</p>
 			
@@ -247,11 +241,11 @@
 			<h2>Post-processing Visualizations</h2>
 			<p>Following the cleaning techniques used, we made visuals to gain insight into the distribution of all the features.</p>
 			<p>Catagorical features:</p> 
-					<ADD IMAGE>
+					<img src="cat_ppv.jpg">
 			<p>Continuous features:</p>
-					<ADD IMAGE>
+					<img src="cont_ppv.jpg">
 			<p>We also thought it was valuable to produce a correlation table between the features:</p>
-					<ADD IMAGE>
+					<img src="purple.jpg">
 			
 						
 			<h2>Data Imbalance</h2>
@@ -268,9 +262,11 @@
 						
 			<h3>PCA</h3>
 			<p>PCA (Principal Component Analysis) is a popular dimensionality reduction technique used to transform high-dimensional datasets into a lower-dimensional space. It does this by identifying the most important features that explain the majority of the variance in the data. The table below shows the percent variance captured by finding 2 and 3 principal components:</p>
-						<ADD TABLE IMAGE>
+						<img src="tab_pca.jpg">
 			<p>It seems clear that we should be using minimally 3 principle components when training our unsupervised learning models. The following are what the PCAs for each dataset type when downsampling to 1000 points for the purpose of visuals:</p>
-							<ADD 3 IMAGES>
+							<img src="unbal_pca.jpg">
+							<img src="down_pca.jpg">
+							<img src="SMOTE-pca.jpg">
 			
 			<h2>Methods</h2>
 			<h3>Unsupervised</h3>
@@ -296,18 +292,18 @@
 			<h3>Unsupervised</h3>
 			<li>KMEANS</li>
 			<p>First, we ran KMeans on our 3 separate datasets (Unbalanced, Downsample Majority, SMOTE-NC) after running PCA on them while setting the number of clusters to 2. This is what the resulting clusterings look like per dataset:</p>
-						<ADD 3 IMAGES>
+						<img src="color_km.jpg">
 			<p>We evaluated the clustering using Silhouette Coefficients, which were:</p>
-						<ADD TABLE IMAGE>
+						<img src="sil_km.jpg">
 			<p>Generally, we can say that the clusters had average to above-average separation. We then wanted to see how well these clusters mapped to the target feature which was whether the person had Heart Disease or not. We mapped the points in these clusters back to the target feature and found the following percentages of points correctly classified.</p>
-						<ADD TABLE IMAGE>
+						<img src="per_km.jpg">
 			<p>We can see that the unbalanced dataset has a significant percentage of properly classified points. However, because we only have 2 clusters here, and there is class imbalance, it is potentially skewed so the statistic may not too helpful in making any conclusions. The other two datasets however are balanced and do not have the same issues. From the table these percentages indicate that it does a little better than a coin toss. This may indicate that the feature with high variance that get captured by PCA are not key features in determining the target feature. We then did more cluster analysis on the features that might have differentiated the two clusters. We did this by linking the clusters back to their original dataset and averaging the values per feature per cluster. We chose to focus on the Downsample Majority dataset alone as an example.</p>
-						<ADD TABLE IMAGE>
+						<ADD TABLE>
 			<p>From this, the differences that pop out immediately are with the PhysicalHealth and MentalHealth features. They are the features that are most different per cluster. These features might vary the most but probably are not indicative of anything related to the target feature.</p>
 			<p>Next, we ran KMeans again but used the Elbow Method to find the optimal number of clusters. It seemed from the resulting graphs that 4 was generally a good number across datasets. This is the graph from using the Elbow Method on the Downsample Majority dataset:</p>
-						<ADD IMAGE>
+						<img src="green_km.jpg">
 			<p>We decided to then run KMeans with 4 clusters on just the Downsample Majority dataset. The clustering result looked like:</p>
-						<ADD IMAGE>
+						<img src="cluster_km.jpg">
 			<p>The Silhouette Coefficient for this clustering was .590 which was similar to the coefficient when there were 2 clustersWe again wanted to see what features were similar in each cluster. Repeating the previous clustering analysis, we got:</p>
 						<ADD TABLE IMAGE>
 			<p>From the results we can see it was still a combination of the same features (PhysicalHealth and MentalHealth) that stood out the most as differentiators, while Stroke also seemed to vary but to a lesser extent. We can generally draw the same conclusions as before. It might be useful to remove these columns or decrease their range so that it is has less of an effect on clustering as a whole.</p>
@@ -315,14 +311,14 @@
 			<li>GAUSSIAN MIXTURE MODEL (GMM) </li>
 							
 			<p>Our KMeans revealed features of high variance that did not result in clusters that related well to our target feature. These features were PhysicalHealth and MentalHealth. Looking through the data it seems like they defaulted to 0.0 if the respondent did not list anything. We decided to then remove these features, along with GenHealth (General Health rating), which seemed to have the same pitfall, Race, which I though might not be as relevant, and SleepTime, which may have had the same pitfall mentioned. We are focusing on the Downsample Majority dataset specifically. After dropping the aforementioned columns from the Downsample Majority dataset, we ran PCA on it, yielding the following results:</p>
-						<ADD TABLE IMAGE>
+						<img src="pc_gmm.jpg">
 			
 			<p>Given both number of principle components had high captured variance, we ran both through GMM with number of clusters equal to 2. This is what the clusters looked like:</p>
-						<ADD 2 IMAGES>
+						<img src="color_gmm.jpg">
 			<p>We again checked the silhouette coefficients of the clusterings:</p>
-						<ADD TABLE IMAGE>
+						<img src="sil_gmm.jpg">
 			<p>Curiously, these coefficients were much less the ones from KMeans. An explanation for this is that we got rid of some high variance features that probably made the separation of the clusters more clear, thus having a higher silhouette coefficient. We then mapped these clusters back to the target feature and saw the following:</p>
-						<ADD TABLE IMAGE>
+						<img src="per_gmm.jpg">
 			<p>Though the clusters from 2 PCs are relatively similar to the results found in KMeans, we see that the clusters from 3 PCs is at least some degree of significance higher. The reasons for this could be the model itself but also could say something about the features we removed. One theory is that they could be detrimental features, or features actually make classification harder. This is something we could check when doing Supervised Learning. Another theory is that they could be introducing noise into the data (especially since some of them had large value ranges) that were good for separating clusters, but influenced PCA heavily and resulted in clusters that differentiated those specific features rather than clusters that discovered relationships in other features that aligned more with the target feature. We then did clustering analysis that could tell us what differentiated each cluster. Here are the mean values per feature per cluster (3 PCs):</p>
 						<ADD TABLE IMAGE>
 							
@@ -332,42 +328,42 @@
 			<h3>Supervised Learning</h3>
 			<li> LOGISTIC REGRESSION </li>
 			<p>As previously stated, we ran Logistic Regression on our 3 datasets (Unbalanced, Downsample Majority, SMOTE-NC) using l2 regularization for penalty, Stochastic Average Gradient Decent for the solver, and 1 for the inverse regularization strength. We also set the max iterations to 200 to ensure model convergence. After running Logistic Regression on our 3 datasets, we had the following results:</p>
-						<ADD TABLE IMAGE>
+						<img src="acc_log.jpg">
 			<p>Given the similarities between train and test accuracy across the board, we can say our models generalize well. Here are the confusion matrices for the 3 datasets in percentage form for the number of points in each category divided by the total number of points: </p>
-						<ADD 3 IMAGES>
+						<img src="cm_log.jpg">
 			<p>Overall, we found the unbalanced dataset far outperformed the balanced datasets for Logistic Regression.</p>
 			<p>Following the analysis done in the Unsupervised section, we saw the how the removal of feature caused clusters to map better to the target variable. In investigating if these might be features (PhysicalHealth, MentalHealth, GenHealth, Race, SleepTime) that make classification harder. We removed these feature from the Unbalanced and Downsample Majority datasets and ran them through Logistic Regression using the same settings. We had the following results:<p/p>
-						<ADD TABLE IMAGE>
+						<img src="acc2_log.jpg">
 			<p>These accuracy values are similar to the accuracy values with the features included. This means that the features in question as a whole are probably not detrimental, but rather ineffectual in accurately determining heart disease.</p>
 							
 			<li> XGBOOST CLASSIFIER </li>
 							
 			<p>As previously stated, the XGBoost Classifier on our 3 datasets (Unbalanced, Downsample Majority, SMOTE-NC). We initially started having the following parameters: learning_rate = .1, n_estimators (number of estimators) = 100, max_depth (max depth of decision trees) = 4. However, to ensure we had optimal parameters per dataset, we used GridSearchCV which provides us with optimal parameters by iterating through a predefined grid of parameters and finding the combination that yields the best test set score. Here were the results (parameters):</p>
-							<ADD TABLE IMAGE>
+							<img src="para_XGB.jpg">
 			<p>For Downsample Majority and Unbalanced datasets, the parameter optimization was normal. However, with SMOTE-NC, we observed how continually pushing up the learning rate and number of estimators yielded higher and higher accuracies. Around the above parameters was where the changes leveled out. The accuracies were as follows:</p>
-								<ADD TABLE IMAGE>
+								<img src="acc_XGB.jpg">
 			<p>We observe that there is something with XGBoost Classifier and SMOTE-NC that yields the best model accuracy that we’ve seen so far. To ensure this model generalized fine, and was not a result of odd interactions between SMOTE-NC and XGBoost Classifier, we also tested it against the unbalanced dataset and yielded an accuracy of 87%. This is still worse then models trained on unbalanced data. The question then becomes whether this SMOTE-NC synthetic data is representative of the human population we don’t have data on. If it is, we can say this model is better. However, in the context of this dataset, it may not be. Here are the confusion matrices:</p>
-							<ADD 3 IMAGES>
+							<img src="cm_XGB.jpg">
 								
 			<li> RANDOM FOREST CLASSIFIER </li>
 								
 			<p>We again ran the Random Forest Classifier on our 3 datasets (Unbalanced, Downsample Majority, SMOTE-NC). We initially started having the following parameter: max_depth = 8. After running this model with this configuration on these dataset, we yielded the following accuracies and recall:</p>
-						<ADD TABLE IMAGE>
-						<ADD 3 IMAGES>
+						<img src="acc_rf.jpg">
+						<img src="cm_rf.jpg">
 			<p>The resulting accuracies themselves are not much different than the results from other models, with unbalanced being better than the sampling methods. However, something that jumps out is how unbalanced has really poor recall. Going back and looking at other confusion matrices, this same trend is very evident. Since this data is medical, the model having difficulty identifying positive instances is likely not good. One reason for this poor recall could be the class imbalance, as we can see how the sampling methods don’t have this issue. Regardless of model accuracy, it may be a reason to consider the other models as superior. Here is the feature importance chart: </p>
-						<ADD IMAGE>
+						<img src="bar_rf.jpg">
 			
 			<p>We can see how the features of most importance are generally the same across datasets. Previously for GMM, we removed PhysicalHealth, MentalHealth, Race, SleepTime, and GenHealth (General Health rating) to see if we could improve cluster to target feature mapping. In this context, we can see how 4 of those features are near/at the bottom of the importance chart, meaning that our intuition was correct there. However, for GenHealth, we can see that it may not have been correct to exclude it, as it has very high importance. Including it may have made our clusters more accurate. We also claimed that BMI, DiffWalking, and KidneyDisease seemed like important features. We can see here that it is partially true, as they are more important than the features we removed. Overall, it is Age that seems to be the most important. It would be interesting to see how these translate to what medical professionals believe contribute the most to see how well these findings align.</p>
 						
 			<li> RANDOM FOREST CLASSIFIER WITH BAGGING </li>
 			<p>As expected, we see that unbalanced data has a higher accuracy of 0.9, and the balanced datasets, the SMOTE-NC and down sampled datasets, have an accuracy of n and m respectively. The downsampled dataset has lower accuracy than the SMOTE-NC because the down sampled has a lower number of data points. We tuned the hyper parameter of n_estimators, and we get the best results using the value of 14 for n_estimators. Some literature suggest using half of the available features for n_eatimators, but we get the best results by using 14. We have some features such as a, b, and c that are more significant.
-					<ADD TABLE IMAGE>
-					<ADD 3 images>
+					<img src="acc_rfb.jpg">
+					<img src="cm_rfb.jpg">
 						
 			<li> BAYE'S CLASSIFICATION </li>
 			<p>As expected, we see that unbalanced data has a higher accuracy of 0.9, and the balanced datasets, the SMOTE-NC and down sampled datasets, have an accuracy of n and m respectively. The downsampled dataset has lower accuracy than the SMOTE-NC because the down sampled has a lower number of data points. We tuned the hyper parameter of n_estimators, and we get the best results using the value of 14 for n_estimators. Some literature suggest using half of the available features for n_eatimators, but we get the best results by using 14. We have some features such as a, b, and c that are more significant.
-					<ADD TABLE IMAGE>
-					<ADD 3 images>
+					<img src="acc_bay.jpg">
+					<img src="cm_bay.jpg">
 						
 
 
@@ -383,7 +379,7 @@
 								
 				
 			<h2>Contribution Table</h2>
-			<ADD IMAGE>
+			<img src="cont_final.jpg">
 				
 			<h2>References</h2>
 			<li>Goel, R. (2021). Heart disease prediction using various algorithms of machine learning. SSRN Electronic Journal. https://doi.org/10.2139/ssrn.3884968</li>
